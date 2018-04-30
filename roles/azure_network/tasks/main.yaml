@@ -1,0 +1,47 @@
+- name: "Creating VNET Virtual Network (aka VPC): {{ name }}"
+  azure_rm_virtualnetwork: name={{ name }} state=present
+                           resource_group={{ name }} location={{ region }}
+                           address_prefixes={{ network_address_prefix }}
+                           tags={{ cloud_tags }}
+  tags:
+     - azure
+     - network
+
+- name: "Creating Subnet: {{ name }}"
+  azure_rm_subnet: name={{ name }} state=present
+                   resource_group={{ name }} 
+                   virtual_network_name={{ name }}
+                   address_prefix_cidr={{ network_subnet_address_prefix }}
+                   tags={{ cloud_tags }}
+  tags:
+     - azure
+     - network
+
+- name: "Creating Public IP: {{ name }}"
+  azure_rm_publicipaddress: name={{ name }} state=present
+                            resource_group={{ name }}
+                            allocation_method={{ network_public_ip_allocation }}
+                            tags={{ cloud_tags }}
+  tags:
+     - azure
+     - network
+
+- name: "Creating Network Security Group (aka SG): {{ name }}"
+  azure_rm_securitygroup: name={{ name }} state=present
+                          resource_group={{ name }} location={{ region }}
+                          rules={{ network_security_group }}
+                          tags={{ cloud_tags }}
+  tags:
+     - azure
+     - network
+
+- name: "Creating a Network Interface: {{ name }}"
+  azure_rm_networkinterface: name={{ name }} state=present
+                             resource_group={{ name }} location={{ region }}
+                             virtual_network={{ name }} subnet={{ name }}
+                             ip_configurations={{ network_ip_configuration }}
+                             security_group={{ name }}
+                             tags={{ cloud_tags }}
+  tags:
+     - azure
+     - network

@@ -1,0 +1,2 @@
+# Possible values are: aws, azure, gce
+cloud_provider: azure

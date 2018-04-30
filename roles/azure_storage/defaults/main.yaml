@@ -1,0 +1,2 @@
+# Possible values: Standard_LRS. Standard_GRS, Standard_RAGRS, Standard_ZRS, Premium_LRS
+storage_account_type: Standard_LRS

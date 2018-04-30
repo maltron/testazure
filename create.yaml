@@ -1,0 +1,28 @@
+---
+- name: Creating a single VM into Microsoft's Azure
+  hosts: localhost
+  connection: local
+  gather_facts: False
+  vars:
+     - name: test1
+     - region: eastus
+     - cloud_tags:
+         myfirsttag: first
+         mysecondtag: second
+     - admin_username: "mauricio"
+     - admin_password: "MauricioLeal#77"
+  vars_files:
+     - cloud_provider.definition
+  pre_tasks:
+#      storage_account_name: name length must be between 3 and 24 characters
+     - name: "Defining a Storage Account: {{ name }}tarakista"
+       set_fact: storage_account_name="{{ name }}tarakista"
+       tags:
+         - azure
+         - storage
+         - compute
+  roles:
+     - { role: "{{ cloud_provider }}_initial" }
+     - { role: "{{ cloud_provider }}_storage" }
+     - { role: "{{ cloud_provider }}_network" }
+     - { role: "{{ cloud_provider }}_compute" }

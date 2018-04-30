@@ -1,0 +1,6 @@
+virtual_machine_size: Standard_DS1_v2
+virtual_machine_image:
+    offer: RHEL
+    publisher: RedHat
+    sku: '7.3'
+    version: latest

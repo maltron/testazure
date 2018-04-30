@@ -1,0 +1,6 @@
+- name: "Creating Resource Group: {{ name }}"
+  azure_rm_resourcegroup: name={{ name }} state=present location={{ region }}
+                          tags={{ cloud_tags }}
+  tags:
+     - azure
+     - initial

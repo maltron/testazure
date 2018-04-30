@@ -1,0 +1,17 @@
+- name: "Creating a Storage Account: {{ storage_account_name }}"
+  azure_rm_storageaccount: name={{ storage_account_name }} state=present
+                           resource_group={{ name }} location={{ region }}
+                           account_type={{ storage_account_type }}
+                           tags={{ cloud_tags }}
+  tags:
+     - azure
+     - storage
+
+- name: "Creating a Storage Container: {{ name }}"
+  azure_rm_storageblob: container={{ name }} state=present
+                        resource_group={{ name }}
+                        storage_account_name={{ storage_account_name }}
+                        tags={{ cloud_tags }}
+  tags:
+     - azure
+     - storage 
