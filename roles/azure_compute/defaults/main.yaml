@@ -1,3 +1,7 @@
+# Possible values: Standard_LRS. Standard_GRS, Standard_RAGRS, Standard_ZRS, Premium_LRS
+virtual_machine_storage_account_type: Standard_LRS
+virtual_machine_data_disks:
+    - { lun: 0, managed_disk_type: "{{ virtual_machine_storage_account_type }}", disk_size_gb: 120 }
 virtual_machine_size: Standard_DS1_v2
 virtual_machine_image:
     offer: RHEL

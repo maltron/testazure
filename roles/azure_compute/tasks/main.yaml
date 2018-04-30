@@ -2,9 +2,9 @@
   azure_rm_virtualmachine: name={{ name }} state=present
                            resource_group={{ name }} 
                            vm_size={{ virtual_machine_size }}
-                           storage_account={{ storage_account_name }} storage_container_name={{ name }}
-                           storage_blob="{{ name }}.vhd"
-                           admin_username={{ admin_username }} admin_password={{ admin_password }} ssh_password_enabled=True
+                           managed_disk_type={{ virtual_machine_storage_account_type }}
+                           data_disks={{ virtual_machine_data_disks }}
+                           admin_username={{ admin_username }} admin_password={{ admin_password }}
                            network_interfaces={{ name }} subnet_name={{ name }}
                            image={{ virtual_machine_image }}
                            tags={{ cloud_tags }}
@@ -14,7 +14,19 @@
      - compute
 
 - debug: var=instance_result
+  register: instance_result
+  tags:
+     - azure
+     - compute
 
 - set_fact: public_ip="{{ instance_result.ansible_facts.azure_vm.properties.networkProfile.networkInterfaces[0].properties.ipConfigurations[0].properties.publicIPAddress.properties.ipAddress }}"
+  register: instance_result
+  tags:
+     - azure
+     - compute
 
 - debug: msg="ssh {{ admin_username }}@{{ public_ip }}"
+  register: instance_result
+  tags:
+     - azure
+     - compute

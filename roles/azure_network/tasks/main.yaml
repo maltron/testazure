@@ -39,6 +39,7 @@
   azure_rm_networkinterface: name={{ name }} state=present
                              resource_group={{ name }} location={{ region }}
                              virtual_network={{ name }} subnet={{ name }}
+
                              ip_configurations={{ network_ip_configuration }}
                              security_group={{ name }}
                              tags={{ cloud_tags }}
