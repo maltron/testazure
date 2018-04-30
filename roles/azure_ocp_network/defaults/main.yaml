@@ -1,0 +1,20 @@
+network_openshift_address_prefix: "10.0.0.0/8"
+# OpenShift Master Networking specifics
+network_subnet_openshift_master_prefix: "10.1.0.0/16"
+network_public_ip_master_allocation: Static
+network_security_group_master:
+   - { name: "enable_ssh", protocol: "Tcp", destination_port_rage: 22,   access: "Allow", priority: 101, direction: "Inbound" }
+   - { name: "webconsole", protocol: "Tcp", destination_port_rage: 8443, access: "Allow", priority: 102, direction: "Inbound" }
+   - { name: "cockpit",    protocol: "Tcp", destination_port_rage: 9090, access: "Allow", priority: 103, direction: "Inbound" }
+network_ip_master_configuration: 
+   - { name: "{{ name }}", private_ip_allocation_method: "Dynamic", public_ip_allocation_method: "Static", public_ip_address_name: "{{ name }}" }
+
+# OpenShift InfraNode Networking specifics
+network_public_ip_infra_allocation: Static
+network_security_group_infra:
+   - { name: "enable_ssh", protocol: "Tcp", destination_port_rage: 22,   access: "Allow", priority: 101, direction: "Inbound" }
+   - { name: "web",        protocol: "Tcp", destination_port_rage: 80,   access: "Allow", priority: 102, direction: "Inbound" }
+   - { name: "ssl",        protocol: "Tcp", destination_port_rage: 443,  access: "Allow", priority: 103, direction: "Inbound" }
+
+# OpenShift Node Networking (aka Application Nodes)
+network_subnet_openshift_node_prefix: "10.2.0.0/16"
