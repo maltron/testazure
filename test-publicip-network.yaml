@@ -1,0 +1,28 @@
+- hosts: localhost
+  connection: local
+  gather_facts: False
+  vars:
+     - name: test10
+     - region: eastus
+     - public_ip_allocation_bastion: Static
+  tasks:
+    - name: "BASTION: Creating Public IP. Allocation: {{ public_ip_allocation_bastion }}"
+      azure_rm_publicipaddress: name={{ publicip }} state=present
+                                resource_group={{ name }} location={{ region }}
+                                allocation_method={{ public_ip_allocation_bastion }}
+      tags: [ ip ]
+
+    - name: "BASTION: Creating Network Interface"
+      azure_rm_networkinterface:
+                  name: "{{ netinterface }}"
+                  state: present
+                  resource_group: "{{ name }}"
+                  location: "{{ region }}"
+                  virtual_network: "{{ name }}"
+                  subnet: "{{ name }}-master-infra"
+                  ip_configurations:
+                   - { name: "myconf", public_ip_address_name: "{{ publicip }}" }
+                  public_ip_address_name: "{{ publicip }}"
+                  security_group: "{{ name }}-bastion-sg"
+                  security_group_name: "{{ name }}-bastion-sg"
+      tags: [ net ]
