@@ -1,4 +1,4 @@
-- name: "Creating Network for OpenShift"
+- name: "Creating Network VNET for OpenShift (aka VPC): Address {{ network_openshift_address_prefix }}"
   azure_rm_virtualnetwork: name={{ name }} state=present
                            resource_group={{ name }} location={{ region }}
                            address_prefixes={{ network_openshift_address_prefix }}
@@ -8,7 +8,7 @@
      - azure
      - network
 
-- name: "Creating Subnet for Master and infra"
+- name: "Creating Subnet for Master and infra: Address {{ network_subnet_openshift_master_prefix }}"
   azure_rm_subnet: name="{{ name }}-master-infra" state=present
                    resource_group={{ name }}
                    virtual_network_name={{ name }} 
@@ -19,7 +19,7 @@
      - azure
      - network
 
-- name: "Creating Subnet for Application Nodes"
+- name: "NODE: Creating Subnet for Application Nodes: Address {{ network_subnet_openshift_node_prefix }}"
   azure_rm_subnet: name="{{ name }}-node" state=present
                    resource_group={{ name }}
                    virtual_network_name={{ name }}
@@ -30,43 +30,22 @@
      - azure
      - network
 
-- name: "MASTER: Creating Public IP"
-  azure_rm_publicipaddress: name="{{ item.hostname }}-publicip" state=present
-                            resource_group={{ name }}
-                            allocation_method={{ network_public_ip_master_allocation }}
-                            tags={{ labels }}
-  with_items: "{{ master_definition }}"
-  tags:
-     - ocp
-     - azure
-     - network
-
-- name: "INFRA: Creating Public IP"
-  azure_rm_publicipaddress: name="{{ item.hostname }}-publicip" state=present
-                            resource_group={{ name }}
-                            allocation_method={{ network_public_ip_infra_allocation }}
-                            tags={{ labels }}
-  with_items: "{{ infra_definition }}"
-  tags:
-     - ocp
-     - azure
-     - network
-
-
-- name: "MASTER: Creating Network Security Group"
-  azure_rm_securitygroup: name="openshift-master-sg" state=present
+- name: "MASTER: Creating Network Security Group (aka SG): openshift-master-sg"
+  azure_rm_securitygroup: name="{{ name }}-master-sg" state=present
                           resource_group={{ name }} location={{ region }}
                           rules={{ network_security_group_master }}
                           tags={{ labels }}
   tags:
+     - ocp
      - azure
      - network
 
-- name: "INFRA: Creating Network Security Group"
-  azure_rm_securitygroup: name="openshift-infra-sg" state=present
+- name: "INFRA: Creating Network Security Group (aka SG): openshift-infra-sg"
+  azure_rm_securitygroup: name="{{ name }}-infra-sg" state=present
                           resource_group={{ name }} location={{ region }}
                           rules={{ network_security_group_infra }}
                           tags={{ labels }}
   tags:
+     - ocp
      - azure
      - network

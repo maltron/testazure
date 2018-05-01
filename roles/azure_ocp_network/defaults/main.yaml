@@ -15,6 +15,7 @@ network_security_group_infra:
    - { name: "enable_ssh", protocol: "Tcp", destination_port_rage: 22,   access: "Allow", priority: 101, direction: "Inbound" }
    - { name: "web",        protocol: "Tcp", destination_port_rage: 80,   access: "Allow", priority: 102, direction: "Inbound" }
    - { name: "ssl",        protocol: "Tcp", destination_port_rage: 443,  access: "Allow", priority: 103, direction: "Inbound" }
+   - { name: "healthZ",    protocol: "Tcp", destination_port_rage: 1936, access: "Allow", priority: 104, direction: "Inbound" }
 
-# OpenShift Node Networking (aka Application Nodes)
+# OpenShift Node Networking specifics (aka Application Nodes)
 network_subnet_openshift_node_prefix: "10.2.0.0/16"
