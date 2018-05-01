@@ -1,0 +1,54 @@
+- name: "MASTER: Creating Public IP"
+  azure_rm_publicipaddress: name={{ item.hostname }} state=present
+                            resource_group={{ name }} location={{ region }}
+                            allocation_method={{ public_ip_allocation_master }}
+                            tags={{ labels }}
+  with_items: "{{ master_definition }}"
+  tags:
+     - ocp
+     - azure
+     - compute
+     - public_ip
+
+- name: "MASTER: Creating Network Interface"
+  azure_rm_networkinterface: 
+              name: "{{ item.hostname }}"
+              state: present
+              resource_group: "{{ name }}"
+              location: "{{ region }}"
+              virtual_network: "{{ name }}"
+              subnet: "{{ name }}-master-infra"
+              ip_configurations:
+                - { name: "{{ item.hostname }}", public_ip_address_name: "{{ item.hostname }}" }
+              security_group: "{{ name }}-master-sg"
+              tags: "{{ labels }}"
+  with_items: "{{ master_definition }}"
+  tags:
+     - ocp
+     - azure
+     - compute
+     - network_interface
+
+- name: "MASTER: Creating instances"
+  azure_rm_virtualmachine: 
+              name: "{{ item.hostname }}"
+              state: present
+              resource_group: "{{ name }}"
+              location: "{{ region }}"
+              os_type: Linux
+              vm_size: "{{ item.machine }}"
+              managed_disk_type: "{{ openshift_storage_account_type }}"
+              data_disks: 
+                 - { lun: 0, managed_disk_type: "{{ openshift_storage_account_type }}", disk_size_gb: "{{ item.disk_docker_size }}" }
+              admin_username: "{{ admin_username }}"
+              ssh_password_enabled: False 
+              ssh_public_keys: 
+                 - path: "/home/{{ admin_username }}/.ssh/authorized_keys"
+                   key_data: "{{ lookup('file','{{ admin_ssh_public_key_file }}') }}" 
+              network_interfaces: "{{ item.hostname }}"
+              subnet: "{{ name }}-master-infra"
+              image: "{{ openshift_base_image }}"
+              remove_on_absent: All
+              tags: "{{ labels }}"
+  with_items: "{{ master_definition }}"
+  tags: [ ocp, azure, compute, master ]

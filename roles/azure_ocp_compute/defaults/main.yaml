@@ -1,0 +1,9 @@
+public_ip_allocation_master: Static
+openshift_storage_account_type: Standard_LRS
+network_ip_configuration:
+   - { name: "{{ name }}", private_ip_allocation_method: "Dynamic", public_ip_allocation_method: "Dynamic", public_ip_address_name: "{{ name }}" }
+openshift_base_image:
+    offer: RHEL
+    publisher: RedHat
+    sku: '7.3'
+    version: latest
