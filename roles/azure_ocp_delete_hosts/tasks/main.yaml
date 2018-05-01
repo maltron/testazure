@@ -1,0 +1,53 @@
+- name: "MASTER: Delete all hosts"
+  azure_rm_virtualmachine: name={{ item.hostname }} state=absent
+                           resource_group={{ name }} location={{ region }}
+  with_items: "{{ master_definition }}"
+  tags:
+     - ocp
+     - azure
+     - delete
+
+- name: "INFRA: Delete all hosts"
+  azure_rm_virtualmachine: name={{ item.hostname }} state=absent
+                           resource_group={{ name }} location={{ region }}
+  with_items: "{{ infra_definition }}"
+  tags:
+     - ocp
+     - azure
+     - delete
+
+- name: "MASTER: Delete all Public IP"
+  azure_rm_publicipaddress: name="{{ item.hostname }}-publicip" state=absent
+                            resource_group={{ name }} location={{ region }}
+  with_items: "{{ master_definition }}"
+  tags:
+     - ocp
+     - azure
+     - delete
+
+- name: "INFRA: Delete all Public IP"
+  azure_rm_publicipaddress: name="{{ item.hostname }}-publicip" state=absent
+                            resource_group={{ name }} location={{ region }}
+  with_items: "{{ infra_definition }}"
+  tags:
+     - ocp
+     - azure
+     - delete
+
+- name: "MASTER: Delete Network Interface"
+  azure_rm_networkinterface: name={{ item.hostname }} state=absent
+                             resource_group={{ name }} location={{ region }}
+  with_items: "{{ master_definition }}"
+  tags:
+     - ocp
+     - azure
+     - delete
+
+- name: "INFRA: Delete Network Interface"
+  azure_rm_networkinterface: name={{ item.hostname }} state=absent
+                             resource_group={{ name }} location={{ region }}
+  with_items: "{{ infra_definition }}"
+  tags:
+     - ocp
+     - azure
+     - delete
