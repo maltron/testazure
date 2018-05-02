@@ -49,3 +49,21 @@
                             resource_group={{ name }} location={{ region }}
   with_items: "{{ infra_definition }}"
   tags: [ ocp, azure, delete, infra ]
+
+- name: "NODE: Delete all instances"
+  azure_rm_virtualmachine: name={{ item.hostname }} state=absent
+                           resource_group={{ name }} location={{ region }}
+  with_items: "{{ node_definition }}"
+  tags: [ ocp, azure, delete, node ]
+
+- name: "NODE: Delete Network Interface"
+  azure_rm_networkinterface: name={{ item.hostname }} state=absent
+                             resource_group={{ name }} location={{ region }}
+  with_items: "{{ node_definition }}"
+  tags: [ ocp, azure, delete, node ]
+
+- name: "NODE: Delete all Public IP"
+  azure_rm_publicipaddress: name={{ item.hostname }} state=absent
+                            resource_group={{ name }} location={{ region }}
+  with_items: "{{ node_definition }}"
+  tags: [ ocp, azure, delete, node ]

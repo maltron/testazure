@@ -5,7 +5,31 @@
   gather_facts: False
   vars_files:
      - openshift.config
+  pre_tasks:
+     - fail: msg="redhat_subscription_username is not defined"
+       when: redhat_subscription_username is not defined
+       tags: [ always ]
+
+     - fail: msg="redhat_subscription_password is not defined"
+       when: redhat_subscription_password is not defined
+       tags: [ always ]
+
+     - fail: msg="openshift_master_url not defined"
+       when: openshift_master_url is not defined
+       tags: [ always ]
+
+     - fail: msg="openshift_cloudapps_url is not defined"
+       when: openshift_cloudapps_url is not defined
+       tags: [ always ]
   roles:
-     - { role: azure_preview_modules } # It solves a bug on azure_rm_networkinterface
+     - { role: azure_preview_modules } # TEMPORARY: It solves a bug on azure_rm_networkinterface
      - { role: "{{ cloud_provider }}_ocp_delete_hosts" }
      - { role: "{{ cloud_provider }}_ocp_compute" }
+     - { role: redhat_subscription }
+
+- name: "FIRST MASTER: Generating a common SSH Key for the whole cluster"
+  hosts: openshift_first_master_group
+  gather_facts: False
+  become: True
+  roles: 
+     - { role: ocp_first_master }

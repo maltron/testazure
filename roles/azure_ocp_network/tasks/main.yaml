@@ -35,6 +35,13 @@
                           tags={{ labels }}
   tags: [ ocp, azure, network ]
 
+- name: "NODE: Creating Network Security Group (aka SG): {{ name }}-node-sg"
+  azure_rm_securitygroup: name="{{ name }}-node-sg" state=present
+                          resource_group={{ name }} location={{ region }}
+                          rules={{ network_security_group_node }}
+                          tags={{ labels }}
+  tags: [ ocp, azure, network ]
+
 - name: "BASTION: Creating Network Security Group (aka SG): {{ name }}-bastion-sg"
   azure_rm_securitygroup: name="{{ name }}-bastion-sg" state=present
                           resource_group={{ name }} location={{ region }}
