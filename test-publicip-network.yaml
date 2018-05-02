@@ -5,6 +5,8 @@
      - name: test10
      - region: eastus
      - public_ip_allocation_bastion: Static
+  roles:
+    - { role: azure_preview_modules }
   tasks:
     - name: "BASTION: Creating Public IP. Allocation: {{ public_ip_allocation_bastion }}"
       azure_rm_publicipaddress: name={{ publicip }} state=present

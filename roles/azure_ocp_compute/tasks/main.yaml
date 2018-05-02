@@ -135,7 +135,7 @@
   with_items: "{{ infra_definition }}"
   tags: [ ocp, azure, compute, vm, infra ]
 
-- set_fact: public_ip="{{ instance_result.ansible_facts.azure_vm.properties.networkProfile.networkInterfaces[0].properties.ipConfigurations[0].properties.publicIPAddress.properties.ipAddress }}"
+- set_fact: public_ip="{{ bastion_instance_result.ansible_facts.azure_vm.properties.networkProfile.networkInterfaces[0].properties.ipConfigurations[0].properties.publicIPAddress.properties.ipAddress }}"
   tags: [ ocp, azure, compute, vm, bastion ]
 
 - debug: msg="Bastion is ready to go{{ ':' }} {{ admin_username }}@{{ public_ip }}"

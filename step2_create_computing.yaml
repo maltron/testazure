@@ -6,5 +6,6 @@
   vars_files:
      - openshift.config
   roles:
+     - { role: azure_preview_modules } # It solves a bug on azure_rm_networkinterface
      - { role: "{{ cloud_provider }}_ocp_delete_hosts" }
      - { role: "{{ cloud_provider }}_ocp_compute" }
