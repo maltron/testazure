@@ -41,6 +41,12 @@
   register: bastion_instance_result
   tags: [ ocp, azure, compute, vm, bastion ]
 
+- name: "BASTION: Adding group: openshift_bastion"
+  add_host: hostname={{ bastion_instance_result.ansible_facts.azure_vm.properties.networkProfile.networkInterfaces[0].properties.ipConfigurations[0].properties.publicIPAddress.properties.ipAddress }}
+            groups=openshift_bastion
+            ansible_user={{ admin_username }}
+  tags: [ ocp, azure, compute, bastion ]
+
 - debug: var=bastion_instance_result
   tags: [ ocp, azure, compute, vm, bastion ]
 
@@ -96,12 +102,6 @@
 
 - debug: var=master_instance_creation
   tags: [ ocp, azure, compute, vm, master ]
-
-- name: "MASTER: Adding group: openshift_first_master_group (FIRST MASTER)"
-  add_host: hostname={{ master_instance_creation.results[0].ansible_facts.azure_vm.properties.networkProfile.networkInterfaces[0].properties.ipConfigurations[0].properties.publicIPAddress.properties.ipAddress }}
-            groups=openshift_first_master_group 
-            ansible_user={{ admin_username }}
-  tags: [ ocp, azure, compute, master ]
 
 - name: "MASTER: Adding group: openshift_master_group (ALL MASTERS)"
   add_host: hostname={{ item.ansible_facts.azure_vm.properties.networkProfile.networkInterfaces[0].properties.ipConfigurations[0].properties.publicIPAddress.properties.ipAddress }} groups=openshift_master_group
