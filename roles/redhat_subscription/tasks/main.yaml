@@ -50,10 +50,10 @@
 
 - name: "Deleting everything but redhat.repo"
   file: path="{{ item.path }}" state=absent
-  with_items: "{{ result_repos.file }}"
-  when: "{{ 'redhat.repo' in item.path }}" 
+  with_items: "{{ result_repos.files }}"
+  when: '"redhat.repo" not in item.path'
   tags: [ ocp, redhat_subscription ]
 
-- name: "Updating the entire host. It may take a long time"
+- name: "Updating the entire host. It might take a long time"
   yum: name="*" state=latest
   tags: [ ocp, redhat_subscription ]

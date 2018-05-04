@@ -41,14 +41,16 @@
   register: bastion_instance_result
   tags: [ ocp, azure, compute, vm, bastion ]
 
+- name: "BASTION: Fetching Bastion Public IP"
+  set_fact: bastion_public_ip="{{ bastion_instance_result.ansible_facts.azure_vm.properties.networkProfile.networkInterfaces[0].properties.ipConfigurations[0].properties.publicIPAddress.properties.ipAddress }}"
+  tags: [ ocp, azure, compute, vm, bastion ]
+
 - name: "BASTION: Adding group: openshift_bastion"
   add_host: hostname={{ bastion_instance_result.ansible_facts.azure_vm.properties.networkProfile.networkInterfaces[0].properties.ipConfigurations[0].properties.publicIPAddress.properties.ipAddress }}
-            groups=openshift_bastion
+            groups=openshift_bastion  
             ansible_user={{ admin_username }}
+            bastion_public_ip={{ bastion_public_ip }}
   tags: [ ocp, azure, compute, bastion ]
-
-- debug: var=bastion_instance_result
-  tags: [ ocp, azure, compute, vm, bastion ]
 
 - name: "MASTER: Creating Public IP. Allocation: {{ public_ip_allocation_master }}"
   azure_rm_publicipaddress: name={{ item.hostname }} state=present
@@ -98,9 +100,6 @@
               tags: "{{ labels }}"
   with_items: "{{ master_definition }}"
   register: master_instance_creation
-  tags: [ ocp, azure, compute, vm, master ]
-
-- debug: var=master_instance_creation
   tags: [ ocp, azure, compute, vm, master ]
 
 - name: "MASTER: Adding group: openshift_master_group (ALL MASTERS)"
@@ -215,17 +214,8 @@
   register: node_instance_creation
   tags: [ ocp, azure, compute, vm, node ]
 
-- debug: var=node_instance_creation
-  tags: [ ocp, azure, compute, vm, node ]
-
 - name: "NODE: Adding group: openshift_node_group"
   add_host: hostname={{ item.ansible_facts.azure_vm.properties.networkProfile.networkInterfaces[0].properties.ipConfigurations[0].properties.publicIPAddress.properties.ipAddress }} groups=openshift_node_group
             ansible_user={{ admin_username }} 
   with_items: "{{ node_instance_creation.results }}"
   tags: [ ocp, azure, compute, node ]
-
-- set_fact: public_ip="{{ bastion_instance_result.ansible_facts.azure_vm.properties.networkProfile.networkInterfaces[0].properties.ipConfigurations[0].properties.publicIPAddress.properties.ipAddress }}"
-  tags: [ ocp, azure, compute, vm, bastion ]
-
-- debug: msg="Bastion is ready to go{{ ':' }} {{ admin_username }}@{{ public_ip }}"
-  tags: [ ocp, azure, compute, vm, bastion ]

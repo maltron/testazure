@@ -1,5 +1,6 @@
+#!/usr/bin/env ansible-playbook
 ---
-- name: Creating Networking capabilities for OpenShift
+- name: "STEP #1: Creating Networking capabilities for OpenShift"
   hosts: localhost
   connection: local
   gather_facts: False

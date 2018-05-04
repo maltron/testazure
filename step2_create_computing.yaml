@@ -1,11 +1,20 @@
+#!/usr/bin/env ansible-playbook
 ---
-- name: "Creating all the necessary hosts for OpenShift. Check the file openshift.config"
+- name: "STEP #2: Creating all the necessary hosts for OpenShift"
   hosts: localhost
   connection: local
   gather_facts: False
   vars_files:
      - openshift.config
   pre_tasks:
+     - fail: msg="admin_username is not defined or is empty"
+       when: admin_username is not defined or admin_username is none
+       tags: [ always ]
+
+     - fail: msg="admin_ssh_publickey is not defined or is empty"
+       when: admin_ssh_publickey is not defined or admin_ssh_publickey is none
+       tags: [ always ]
+
      - fail: msg="redhat_subscription_username is not defined or is empty"
        when: redhat_subscription_username is not defined or redhat_subscription_username is none
        tags: [ always ]
@@ -27,8 +36,7 @@
      - { role: "{{ cloud_provider }}_ocp_compute" }
 
 - name: "ALL: Applying Red Hat Subscription"
-#  hosts: openshift_bastion, openshift_master_group, openshift_infra_group, openshift_node_group
-  hosts: all
+  hosts: openshift_bastion, openshift_master_group, openshift_infra_group, openshift_node_group
   gather_facts: False
   become: True
   vars_files:
@@ -36,10 +44,12 @@
   roles:
      - { role: redhat_subscription }
 
-- name: "BASTION: Preparing with all the necessary tools"
+- name: "BASTION: Preparing host where Installation will take place"
   hosts: openshift_bastion
-  gather_facts: False
+  gather_facts: false
   become: True
+  vars_files:
+     - openshift.config
   roles: 
      - { role: ocp_bastion_preparation }
 
