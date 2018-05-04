@@ -62,12 +62,12 @@
   roles: 
      - { role: ocp_hosts_preparation }
 
-- name: "Final Steps: Removing SSH"
+- name: "Final Steps"
   hosts: openshift_master_group, openshift_infra_group, openshift_node_group
   gather_facts: False
   become: True
   vars_files:
      - openshift.config
   roles:
-     - { role: "{{ cloud_provider }}_remove_ssh" }
+     - { role: "{{ cloud_provider }}_final_steps" }
 
