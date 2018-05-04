@@ -1,1 +1,1 @@
-- debug: msg="AZURE: Final Steps"
+- debug: msg="AZURE{{ ':' }} Final Steps"
